@@ -1,12 +1,13 @@
+
 /* General Styles */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url('4.png'), url('22.png'), url('23.png'); /* Multiple background images */
+  background-image: url('23.png'), url('22.png'), url('4.png'), url('21.png'); /* Multiple background images */
   background-size: 390px auto; /* Fixing the width of all images */
   background-repeat: no-repeat;
-  background-position: center top, center top 390px, center top 780px; /* Stack them one after another */
+  background-position: center top, center top 390px, center top 780px, center top 1170px; /* Stack them one after another */
   color: #ffffff;
 }
 
@@ -31,13 +32,13 @@ header {
 .main-title {
   font-size: 48px;
   font-family: 'Bebas Neue', sans-serif;
-  color: #FFD700;
+  color: #FFD700; /* Bright yellow */
 }
 
 .tagline {
   margin-top: 25px;
   font-size: 24px;
-  color: #000000; /* Aesthetic black */
+  color: #FFD700; /* Bright yellow */
 }
 
 /* Buttons */
@@ -56,6 +57,7 @@ header {
   font-size: 18px;
   margin: 15px;
   border-radius: 30px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .button:hover {
@@ -70,11 +72,13 @@ header {
 
 .about-curator h2 {
   font-size: 28px;
+  font-family: 'Bebas Neue', sans-serif;
   color: #FFD700;
 }
 
 .about-curator p {
   font-size: 18px;
+  font-family: 'Poppins', sans-serif;
   color: white;
   margin-top: 20px;
 }
@@ -93,6 +97,7 @@ header {
   padding: 20px;
   border-radius: 20px;
   color: #FFD700;
+  font-family: 'Poppins', sans-serif;
   font-style: italic;
   font-size: 18px;
   text-align: center;
@@ -107,6 +112,7 @@ header {
 
 .why-curator h2 {
   font-size: 28px;
+  font-family: 'Bebas Neue', sans-serif;
   color: #FFD700;
 }
 
@@ -121,6 +127,7 @@ header {
   margin: 10px 0;
   display: flex;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .why-curator li span {
