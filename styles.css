@@ -3,14 +3,14 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url('23.png'), url('22.png'), url('4.png'), url('21.png'); /* Multiple background images */
-  background-size: 390px auto; /* Fix width to 390px, height will auto-adjust */
-  background-repeat: no-repeat;
-  background-position: center top, center top 100vh, center top 200vh, center top 300vh; /* Stack the images with vertical gaps */
   color: #ffffff;
+  background-image: url('23.png'), url('22.png'), url('4.png'), url('21.png');
+  background-size: 390px auto; /* Width fixed, height auto */
+  background-repeat: repeat-y; /* Repeat the images vertically */
+  background-position: top center, 100vh center, 200vh center, 300vh center; /* Position images one after another */
 }
 
-/* Main Title and Tagline - No Black Transparent Layer */
+/* Main Title and Tagline */
 header {
   text-align: center;
   padding-top: 20px;
@@ -26,7 +26,7 @@ header {
 .tagline {
   font-size: 24px;
   color: #FFD700; /* Bright yellow */
-  margin-bottom: 80px; /* Space before the buttons */
+  margin-bottom: 80px;
 }
 
 /* Buttons */
@@ -56,6 +56,7 @@ header {
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
   padding: 20px;
   border-radius: 10px;
+  margin-top: 50px;
 }
 
 /* About Curator Section */
