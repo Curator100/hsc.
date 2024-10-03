@@ -1,50 +1,37 @@
-
 /* General Styles */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   background-image: url('23.png'), url('22.png'), url('4.png'), url('21.png'); /* Multiple background images */
-  background-size: 390px auto; /* Fixing the width of all images */
+  background-size: 390px auto; /* Fix width to 390px, height will auto-adjust */
   background-repeat: no-repeat;
-  background-position: center top, center top 390px, center top 780px, center top 1170px; /* Stack them one after another */
+  background-position: center top, center top 100vh, center top 200vh, center top 300vh; /* Stack the images with vertical gaps */
   color: #ffffff;
 }
 
-/* Black Transparent Layer for Text Readability */
-.overlay {
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  padding: 20px;
-  border-radius: 10px;
-}
-
-h1, h2, p {
-  margin: 0;
-  padding: 0;
-}
-
+/* Main Title and Tagline - No Black Transparent Layer */
 header {
   text-align: center;
   padding-top: 20px;
 }
 
-/* Main Title and Tagline */
 .main-title {
   font-size: 48px;
   font-family: 'Bebas Neue', sans-serif;
   color: #FFD700; /* Bright yellow */
+  margin-bottom: 25px;
 }
 
 .tagline {
-  margin-top: 25px;
   font-size: 24px;
   color: #FFD700; /* Bright yellow */
+  margin-bottom: 80px; /* Space before the buttons */
 }
 
 /* Buttons */
 .buttons {
   text-align: center;
-  margin-top: 80px;
 }
 
 .button {
@@ -62,6 +49,13 @@ header {
 
 .button:hover {
   background-color: #FF4500;
+}
+
+/* Black Transparent Layer for Other Text */
+.overlay {
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  padding: 20px;
+  border-radius: 10px;
 }
 
 /* About Curator Section */
