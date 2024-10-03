@@ -3,10 +3,18 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url('4.png');
-  background-size: 390px auto; /* Fixing the width */
-  background-position: center top;
+  background-image: url('4.png'), url('22.png'), url('23.png'); /* Multiple background images */
+  background-size: 390px auto; /* Fixing the width of all images */
+  background-repeat: no-repeat;
+  background-position: center top, center top 390px, center top 780px; /* Stack them one after another */
   color: #ffffff;
+}
+
+/* Black Transparent Layer for Text Readability */
+.overlay {
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  padding: 20px;
+  border-radius: 10px;
 }
 
 h1, h2, p {
@@ -29,7 +37,7 @@ header {
 .tagline {
   margin-top: 25px;
   font-size: 24px;
-  color: #000000; /* Changed to aesthetic black */
+  color: #000000; /* Aesthetic black */
 }
 
 /* Buttons */
@@ -68,10 +76,6 @@ header {
 .about-curator p {
   font-size: 18px;
   color: white;
-  padding: 0 20px;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for readability */
-  border-radius: 10px;
-  display: inline-block;
   margin-top: 20px;
 }
 
@@ -123,4 +127,4 @@ header {
   font-size: 24px;
   color: #FFD700;
   margin-right: 10px;
-  }
+}
