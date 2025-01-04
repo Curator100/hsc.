@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Registration Form</title>
+    <style>
+        :root {
+            --pink-primary: #ff69b4;
+            --pink-secondary: #ffb6c1;
+            --pink-dark: #db7093;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                        url('89.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--pink-dark);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--pink-dark);
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--pink-secondary);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--pink-primary);
+        }
+
+        .options-container {
+            display: none;
+        }
+
+        .options-container.active {
+            display: block;
+        }
+
+        button {
+            background-color: var(--pink-primary);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--pink-dark);
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            color: var(--pink-dark);
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Tutor Registration Form</h1>
+        <form id="tutorForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="college">College:</label>
+                <input type="text" id="college" name="college" required>
+            </div>
+
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp Number:</label>
+                <input type="tel" id="whatsapp" name="whatsapp" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Which subject do you need help with?</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+
+            <div class="form-group">
+                <label for="classes">Number of classes:</label>
+                <select id="classes" name="classes" required>
+                    <option value="">Select an option</option>
+                    <option value="1class">1 Class</option>
+                    <option value="1month">1 Month (12 classes)</option>
+                    <option value="fullbook">Full Book</option>
+                </select>
+            </div>
+
+            <div id="oneClassOptions" class="options-container">
+                <div class="form-group">
+                    <label for="duration">Class Duration:</label>
+                    <select id="duration" name="duration">
+                        <option value="">Select duration</option>
+                        <option value="30min">30 minutes (450 taka / 5 dollar)</option>
+                        <option value="45min">45 minutes (650 taka / 7 dollar)</option>
+                        <option value="90min">1.5 hours (1150 taka / 12 dollar)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="oneMonthOptions" class="options-container">
+                <div class="form-group">
+                    <label for="tutorType">Select Tutor Type:</label>
+                    <select id="tutorType" name="tutorType">
+                        <option value="">Select tutor type</option>
+                        <option value="good">Good Tutor (5000 taka)</option>
+                        <option value="great">Great Tutor (8000 taka)</option>
+                        <option value="experienced">Highly Experienced Tutor (12000 taka)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+        <div id="successMessage" class="success-message">
+            Thanks for submitting. Curator will soon contact with you!
+        </div>
+    </div>
+
+    <script>
+        const botToken = '7447671480:AAFtEWOh_y3k5UpIeUnV-5fJdV3L-RlqC6M';
+        const chatId = '906269717';
+
+        document.getElementById('classes').addEventListener('change', function() {
+            const oneClassOptions = document.getElementById('oneClassOptions');
+            const oneMonthOptions = document.getElementById('oneMonthOptions');
+            
+            oneClassOptions.classList.remove('active');
+            oneMonthOptions.classList.remove('active');
+            
+            if (this.value === '1class') {
+                oneClassOptions.classList.add('active');
+            } else if (this.value === '1month') {
+                oneMonthOptions.classList.add('active');
+            }
+        });
+
+        document.getElementById('tutorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            let message = 'New Registration:\n\n';
+            
+            for (let [key, value] of formData.entries()) {
+                message += `${key}: ${value}\n`;
+            }
+
+           try {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                if (response.ok) {
+                    // Hide the form and show success message
+                    document.getElementById('tutorForm').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset form
+                    this.reset();
+
+                    // Optional: Scroll to success message
+                    document.getElementById('successMessage').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting the form. Please try again later.');
+            }
+        });
+
+        // Form validation functions
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            this.value = this.value.replace(/[^0-9+]/g, '');
+        });
+
+        // Add required validation for conditional fields
+        document.getElementById('classes').addEventListener('change', function() {
+            const duration = document.getElementById('duration');
+            const tutorType = document.getElementById('tutorType');
+            
+            // Reset required attribute
+            duration.required = false;
+            tutorType.required = false;
+            
+            // Set required based on selection
+            if (this.value === '1class') {
+                duration.required = true;
+            } else if (this.value === '1month') {
+                tutorType.required = true;
+            }
+        });
+
+        // Add timestamp to form submission
+        document.getElementById('tutorForm').addEventListener('submit', function(e) {
+            const now = new Date();
+            const timestamp = now.toISOString();
+           const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'submission_time';
+            hiddenInput.value = timestamp;
+            this.appendChild(hiddenInput);
+        });
+
+        // Add loading state to submit button
+        const form = document.getElementById('tutorForm');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        function setLoadingState(isLoading) {
+            if (isLoading) {
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+            } else {
+                submitButton.textContent = 'Submit';
+                submitButton.disabled = false;
+            }
+        }
+
+        // Format price display
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-BD', {
+                style: 'currency',
+                currency: 'BDT'
+            }).format(price);
+        }
+
+        // Add metadata to form submission
+        function addMetadata(formData) {
+            const metadata = {
+                submissionDate: '2025-01-04 10:42:59',
+                submittedBy: 'Curator100',
+                userAgent: navigator.userAgent,
+                platform: navigator.platform
+            };
+            
+            formData.append('metadata', JSON.stringify(metadata));
+            return formData;
+        }
+
+        // Initialize form validation
+        function initializeFormValidation() {
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                field.addEventListener('invalid', (e) => {
+                    e.preventDefault();
+                    field.classList.add('invalid');
+                });
+                
+                field.addEventListener('input', () => {
+                    field.classList.remove('invalid');
+                });
+            });
+        }
+
+        // Add success message animation
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            successMessage.style.opacity = '0';
+            
+            // Fade in animation
+            let opacity = 0;
+            const fadeIn = setInterval(() => {
+                if (opacity < 1) {
+                    opacity += 0.1;
+                    successMessage.style.opacity = opacity;
+                } else {
+                    clearInterval(fadeIn);
+                }
+            }, 50);
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFormValidation();
+            
+            // Add form submission handler
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                setLoadingState(true);
+                
+                const formData = new FormData(form);
+                const enrichedFormData = addMetadata(formData);
+                
+                try {
+                    // Send to Telegram
+                    const message = Array.from(enrichedFormData.entries())
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join('\n');
+
+                    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message,
+                            parse_mode: 'HTML'
+                        })
+                    });
+
+                    if (response.ok) {
+                        form.reset();
+                        form.style.display = 'none';
+                        showSuccessMessage();
+                    } else {
+                        throw new Error('Failed to send message');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('There was an error submitting the form. Please try again later.');
+                } finally {
+                    setLoadingState(false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
