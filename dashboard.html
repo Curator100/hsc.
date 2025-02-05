@@ -1,6 +1,3 @@
-
-<!DOCTYPE html>
-<html lang="en">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,9 +114,12 @@
             outline: none;
             border-color: var(--accent-color);
         }
+
+        .keyword-red {
+            color: red;
+        }
     </style>
 </head>
-
 
 <body>
     <div class="background"></div>
@@ -148,18 +148,18 @@
         <div id="dashboard" class="dashboard hidden">
             <h2 id="welcomeMessage"></h2>
             <div id="levelInfo">
-                <h3>Level: <span id="levelName"></span></h3>
+                <h3><span class="keyword-red">Level</span>: <span id="levelName"></span></h3>
                 <div class="progress-bar">
                     <div id="progressBar" class="progress"></div>
                 </div>
             </div>
-            <h3>Cure Coins: <span id="cureCoins"></span></h3>
-            <h3>Today's Task: <span id="task"></span></h3>
+            <h3><span class="keyword-red">Cure Coins</span>: <span id="cureCoins"></span></h3>
+            <h3><span class="keyword-red">Today's Task</span>: <span id="task"></span></h3>
             <button id="examButton" onclick="redirectToExam()">Today's Exam</button>
-            <h3>Message from Curator: <span id="curatorMessage"></span></h3>
-            <h3>Your Challenge: <span id="challenge"></span></h3>
-            <h3>Your Course: <span id="course"></span></h3>
-            <iframe width="100%" height="315" src="https://www.youtube.com/embed/HV7QTGcCN24" frameborder="0" allowfullscreen></iframe>
+            <h3><span class="keyword-red">Message from Curator</span>: <span id="curatorMessage"></span></h3>
+            <h3><span class="keyword-red">Your Challenge</span>: <span id="challenge"></span></h3>
+            <h3><span class="keyword-red">Your Course</span>: <span id="course"></span></h3>
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/FJ3N_2r6R-o?si" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -249,18 +249,14 @@
             audio.src = theme.music;
             audio.play();
         }
-// Continuing from the previous code...
 
         // Get level name based on mode and cure coins
         function getLevelName(mode, coins) {
             const levels = {
-               natural: ['Stone', 'Leaf', 'Branch', 'Forest', 'River', 'Mountain', 'Ocean'],  
-bts: ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'],  
-villain: ['Joker', 'Darth Vader', 'Loki', 'Voldemort', 'Thanos', 'Magneto', 'Sauron'],  
-islamic: ['NPC', 'Tryhard', 'Certified No-Lifer', 'Big Brain Energy', 'Main Character', 'Goated Scholar', 'Galaxy Brain']
-
-  
-
+                natural: ['Stone', 'Leaf', 'Branch', 'Forest', 'River', 'Mountain', 'Ocean'],  
+                bts: ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'],  
+                villain: ['Joker', 'Darth Vader', 'Loki', 'Voldemort', 'Thanos', 'Magneto', 'Sauron'],  
+                islamic: ['NPC', 'Tryhard', 'Certified No-Lifer', 'Big Brain Energy', 'Main Character', 'Goated Scholar', 'Galaxy Brain']
             };
 
             let levelIndex;
@@ -315,9 +311,9 @@ islamic: ['NPC', 'Tryhard', 'Certified No-Lifer', 'Big Brain Energy', 'Main Char
         // Redirect to exam based on roll number
         function redirectToExam() {
             const roll = parseInt(userData.roll);
-            if (roll >= 0 && roll <= 1000) {
-                window.location.href = 'index.html';
-            } else if (roll >= 1001 && roll <= 2000) {
+            if (roll >= 0 && roll <= 2000) {
+                window.location.href = 'class12.html';
+            } else if (roll >= 2001 && roll <= 4000) {
                 window.location.href = 'tutor.html';
             }
         }
