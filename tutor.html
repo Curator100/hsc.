@@ -93,6 +93,19 @@
             margin-top: 20px;
         }
 
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
         @media (max-width: 480px) {
             .form-container {
                 padding: 20px;
@@ -101,6 +114,10 @@
     </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div>Detecting your location...</div>
+    </div>
+    
     <div class="form-container">
         <h1>Tutor Registration Form</h1>
         <form id="tutorForm">
@@ -139,9 +156,7 @@
                     <label for="duration">Class Duration:</label>
                     <select id="duration" name="duration">
                         <option value="">Select duration</option>
-                        <option value="30min">30 minutes (450 taka / 5 dollar)</option>
-                        <option value="45min">45 minutes (650 taka / 7 dollar)</option>
-                        <option value="90min">1.5 hours (1150 taka / 12 dollar)</option>
+                        <!-- Options will be populated by JavaScript -->
                     </select>
                 </div>
             </div>
@@ -151,9 +166,7 @@
                     <label for="tutorType">Select Tutor Type:</label>
                     <select id="tutorType" name="tutorType">
                         <option value="">Select tutor type</option>
-                        <option value="good">Good Tutor (5000 taka)</option>
-                        <option value="great">Great Tutor (8000 taka)</option>
-                        <option value="experienced">Highly Experienced Tutor (12000 taka)</option>
+                        <!-- Options will be populated by JavaScript -->
                     </select>
                 </div>
             </div>
@@ -168,6 +181,123 @@
     <script>
         const botToken = '7447671480:AAFtEWOh_y3k5UpIeUnV-5fJdV3L-RlqC6M';
         const chatId = '906269717';
+
+        const pricing = {
+            BD: {
+                currency: 'BDT',
+                symbol: '৳',
+                basic: 450,
+                standard: 650,
+                premium: 1150,
+                monthly: {
+                    good: 5000,
+                    great: 8000,
+                    experienced: 12000
+                }
+            },
+            IN: {
+                currency: 'INR',
+                symbol: '₹',
+                basic: 400,
+                standard: 600,
+                premium: 1200,
+                monthly: {
+                    good: 4500,
+                    great: 7500,
+                    experienced: 11000
+                }
+            },
+            US: {
+                currency: 'USD',
+                symbol: '$',
+                basic: 25,
+                standard: 45,
+                premium: 80,
+                monthly: {
+                    good: 250,
+                    great: 450,
+                    experienced: 800
+                }
+            },
+            GB: {
+                currency: 'GBP',
+                symbol: '£',
+                basic: 20,
+                standard: 35,
+                premium: 65,
+                monthly: {
+                    good: 200,
+                    great: 350,
+                    experienced: 650
+                }
+            },
+            AE: {
+                currency: 'AED',
+                symbol: 'AED',
+                basic: 80,
+                standard: 120,
+                premium: 200,
+                monthly: {
+                    good: 800,
+                    great: 1200,
+                    experienced: 2000
+                }
+            }
+        };
+
+        // Default pricing (used if country not detected)
+        let currentPricing = pricing.US;
+
+        async function detectCountry() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            const apis = [
+                'https://ipinfo.io/json',
+                'https://ipapi.co/json/',
+                'https://api.ipgeolocation.io/ipgeo?apiKey=demo'
+            ];
+
+            for (const api of apis) {
+                try {
+                    const response = await fetch(api);
+                    if (!response.ok) continue;
+                    
+                    const data = await response.json();
+                    const countryCode = data.country || data.country_code || data.country_code2;
+                    
+                    if (countryCode && pricing[countryCode]) {
+                        currentPricing = pricing[countryCode];
+                        break;
+                    }
+                } catch (err) {
+                    continue;
+                }
+            }
+
+            updatePricingDisplay();
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function updatePricingDisplay() {
+            const durationSelect = document.getElementById('duration');
+            const tutorTypeSelect = document.getElementById('tutorType');
+
+            // Update single class options
+            durationSelect.innerHTML = `
+                <option value="">Select duration</option>
+                <option value="30min">30 minutes (${currentPricing.symbol}${currentPricing.basic})</option>
+                <option value="45min">45 minutes (${currentPricing.symbol}${currentPricing.standard})</option>
+                <option value="90min">1.5 hours (${currentPricing.symbol}${currentPricing.premium})</option>
+            `;
+
+            // Update monthly options
+            tutorTypeSelect.innerHTML = `
+                <option value="">Select tutor type</option>
+                <option value="good">Good Tutor (${currentPricing.symbol}${currentPricing.monthly.good})</option>
+                <option value="great">Great Tutor (${currentPricing.symbol}${currentPricing.monthly.great})</option>
+                <option value="experienced">Highly Experienced Tutor (${currentPricing.symbol}${currentPricing.monthly.experienced})</option>
+            `;
+        }
 
         document.getElementById('classes').addEventListener('change', function() {
             const oneClassOptions = document.getElementById('oneClassOptions');
@@ -193,7 +323,11 @@
                 message += `${key}: ${value}\n`;
             }
 
-           try {
+            // Add country information to the message
+            message += `\nDetected Country: ${Object.keys(pricing).find(key => pricing[key] === currentPricing) || 'Unknown'}\n`;
+            message += `Currency: ${currentPricing.currency}\n`;
+
+            try {
                 const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
@@ -207,17 +341,9 @@
                 });
 
                 if (response.ok) {
-                    // Hide the form and show success message
                     document.getElementById('tutorForm').style.display = 'none';
                     document.getElementById('successMessage').style.display = 'block';
-                    
-                    // Reset form
                     this.reset();
-
-                    // Optional: Scroll to success message
-                    document.getElementById('successMessage').scrollIntoView({ 
-                        behavior: 'smooth' 
-                    });
                 } else {
                     throw new Error('Failed to send message');
                 }
@@ -227,154 +353,8 @@
             }
         });
 
-        // Form validation functions
-        document.getElementById('whatsapp').addEventListener('input', function(e) {
-            // Remove any non-numeric characters
-            this.value = this.value.replace(/[^0-9+]/g, '');
-        });
-
-        // Add required validation for conditional fields
-        document.getElementById('classes').addEventListener('change', function() {
-            const duration = document.getElementById('duration');
-            const tutorType = document.getElementById('tutorType');
-            
-            // Reset required attribute
-            duration.required = false;
-            tutorType.required = false;
-            
-            // Set required based on selection
-            if (this.value === '1class') {
-                duration.required = true;
-            } else if (this.value === '1month') {
-                tutorType.required = true;
-            }
-        });
-
-        // Add timestamp to form submission
-        document.getElementById('tutorForm').addEventListener('submit', function(e) {
-            const now = new Date();
-            const timestamp = now.toISOString();
-           const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'submission_time';
-            hiddenInput.value = timestamp;
-            this.appendChild(hiddenInput);
-        });
-
-        // Add loading state to submit button
-        const form = document.getElementById('tutorForm');
-        const submitButton = form.querySelector('button[type="submit"]');
-
-        function setLoadingState(isLoading) {
-            if (isLoading) {
-                submitButton.textContent = 'Submitting...';
-                submitButton.disabled = true;
-            } else {
-                submitButton.textContent = 'Submit';
-                submitButton.disabled = false;
-            }
-        }
-
-        // Format price display
-        function formatPrice(price) {
-            return new Intl.NumberFormat('en-BD', {
-                style: 'currency',
-                currency: 'BDT'
-            }).format(price);
-        }
-
-        // Add metadata to form submission
-        function addMetadata(formData) {
-            const metadata = {
-                submissionDate: '2025-01-04 10:42:59',
-                submittedBy: 'Curator100',
-                userAgent: navigator.userAgent,
-                platform: navigator.platform
-            };
-            
-            formData.append('metadata', JSON.stringify(metadata));
-            return formData;
-        }
-
-        // Initialize form validation
-        function initializeFormValidation() {
-            const requiredFields = form.querySelectorAll('[required]');
-            
-            requiredFields.forEach(field => {
-                field.addEventListener('invalid', (e) => {
-                    e.preventDefault();
-                    field.classList.add('invalid');
-                });
-                
-                field.addEventListener('input', () => {
-                    field.classList.remove('invalid');
-                });
-            });
-        }
-
-        // Add success message animation
-        function showSuccessMessage() {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-            successMessage.style.opacity = '0';
-            
-            // Fade in animation
-            let opacity = 0;
-            const fadeIn = setInterval(() => {
-                if (opacity < 1) {
-                    opacity += 0.1;
-                    successMessage.style.opacity = opacity;
-                } else {
-                    clearInterval(fadeIn);
-                }
-            }, 50);
-        }
-
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeFormValidation();
-            
-            // Add form submission handler
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                setLoadingState(true);
-                
-                const formData = new FormData(form);
-                const enrichedFormData = addMetadata(formData);
-                
-                try {
-                    // Send to Telegram
-                    const message = Array.from(enrichedFormData.entries())
-                        .map(([key, value]) => `${key}: ${value}`)
-                        .join('\n');
-
-                    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            chat_id: chatId,
-                            text: message,
-                            parse_mode: 'HTML'
-                        })
-                    });
-
-                    if (response.ok) {
-                        form.reset();
-                        form.style.display = 'none';
-                        showSuccessMessage();
-                    } else {
-                        throw new Error('Failed to send message');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('There was an error submitting the form. Please try again later.');
-                } finally {
-                    setLoadingState(false);
-                }
-            });
-        });
+        // Initialize country detection and form
+        detectCountry();
     </script>
 </body>
 </html>
